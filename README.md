@@ -8,6 +8,12 @@ This is a Firebase authentication example using Next JS and Material UI.
 - [Material UI](https://material-ui.com/)
 - [Firebase](https://firebase.google.com/)
 
+## Preview:
+
+<h1 align="center">
+  <img src="./public/preview/preview-login.png"/>
+</h1>
+
 ## Getting Started
 
 First, run the development server:
