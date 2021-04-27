@@ -140,7 +140,7 @@ const SignupCard: React.FC = () => {
           </Box>
           <Box>
             <Typography variant="body2">
-              Already have an account?
+              Already have an account?{" "}
               <NextLink href="/login">
                 <Link style={{ cursor: "pointer" }}>Log In</Link>
               </NextLink>

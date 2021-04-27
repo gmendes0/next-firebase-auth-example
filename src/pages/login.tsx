@@ -131,7 +131,7 @@ const Login: React.FC = () => {
           </Box>
           <Box>
             <Typography variant="body2">
-              Don't have an account yet?
+              Don't have an account yet?{" "}
               <NextLink href="/signup">
                 <Link style={{ cursor: "pointer" }}>Sign Up</Link>
               </NextLink>
