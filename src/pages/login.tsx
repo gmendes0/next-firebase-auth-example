@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up("sm")]: {
       width: 375,
     },
-    boxShadow: theme.shadows[20],
+    boxShadow: theme.shadows[7],
     borderRadius: 10,
   },
   title: {
@@ -44,6 +44,9 @@ const useStyles = makeStyles(theme => ({
   formButton: {
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
+  },
+  signUpTextContainer: {
+    marginTop: theme.spacing(2),
   },
 }));
 
@@ -88,7 +91,6 @@ const Login: React.FC = () => {
         width="100vw"
         height="100vh"
       >
-        {currentUser && JSON.stringify(currentUser.email)}
         <Box
           className={styles.formContainer}
           display="flex"
@@ -146,16 +148,24 @@ const Login: React.FC = () => {
                   />
                 )}
               </div>
+              <NextLink href="/forgot-password">
+                <Link style={{ cursor: "pointer" }}>
+                  <Typography align="center" variant="body2">
+                    Forgot Password?
+                  </Typography>
+                </Link>
+              </NextLink>
             </Box>
           </Box>
-          <Box>
-            <Typography variant="body2">
-              Don't have an account yet?{" "}
-              <NextLink href="/signup">
-                <Link style={{ cursor: "pointer" }}>Sign Up</Link>
-              </NextLink>
-            </Typography>
-          </Box>
+        </Box>
+
+        <Box className={styles.signUpTextContainer}>
+          <Typography variant="body1">
+            Don't have an account yet?{" "}
+            <NextLink href="/signup">
+              <Link style={{ cursor: "pointer" }}>Sign Up</Link>
+            </NextLink>
+          </Typography>
         </Box>
       </Box>
     </>

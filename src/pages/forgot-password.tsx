@@ -1,5 +1,3 @@
-import { SyntheticEvent, useRef, useState } from "react";
-import { useRouter } from "next/router";
 import NextLink from "next/link";
 import {
   Box,
@@ -10,6 +8,7 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
+import { SyntheticEvent, useRef, useState } from "react";
 import { Alert } from "@material-ui/lab";
 import { useAuth } from "../context/AuthContext";
 
@@ -38,7 +37,7 @@ const useStyles = makeStyles(theme => ({
     top: "50%",
     right: "50%",
     marginTop: -10, // Metade do tamanho
-    marginRight: -10 - 50, // Metade do tamanho menos margem
+    marginRight: -10 - 95, // Metade do tamanho - margem
     color: theme.palette.text.disabled,
   },
   formButton: {
@@ -50,39 +49,31 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const SignupCard: React.FC = () => {
+export default function ForgotPassword() {
   const styles = useStyles();
-  const router = useRouter();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
   const emailRef = useRef<HTMLInputElement>();
-  const passwordRef = useRef<HTMLInputElement>();
-  const passwordConfirmationRef = useRef<HTMLInputElement>();
 
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  const { signup, currentUser } = useAuth();
+  const { resetPassword } = useAuth();
 
   async function handleSubmit(event: SyntheticEvent<HTMLButtonElement>) {
     event.preventDefault();
 
-    if (
-      !passwordRef.current.value ||
-      !passwordConfirmationRef.current.value ||
-      !emailRef.current.value
-    )
-      return setError("Please, fill out all fields");
-
-    if (passwordRef.current.value !== passwordConfirmationRef.current.value)
-      return setError("Passwords do not match");
+    if (!emailRef.current.value) return setError("Please fill out all fields");
 
     try {
       setError("");
+      setMessage("");
       setIsLoading(true);
-      await signup(emailRef.current.value, passwordRef.current.value);
-      router.push("/");
+
+      await resetPassword(emailRef.current.value);
+      setMessage("We've sent a password reset link to this email address");
     } catch (error) {
-      setError("Failed to create an account");
+      setError("Failed to reset password");
     } finally {
       setIsLoading(false);
     }
@@ -98,7 +89,6 @@ const SignupCard: React.FC = () => {
         width="100vw"
         height="100vh"
       >
-        {currentUser && JSON.stringify(currentUser.email)}
         <Box
           className={styles.formContainer}
           display="flex"
@@ -106,11 +96,16 @@ const SignupCard: React.FC = () => {
           alignItems="center"
         >
           <Typography className={styles.title} component="h1" variant="h5">
-            Sign In
+            Reset Password
           </Typography>
           {error && (
             <Alert severity="error" variant="standard">
               {error}
+            </Alert>
+          )}
+          {message && (
+            <Alert severity="success" variant="standard">
+              {message}
             </Alert>
           )}
           <Box width="100%">
@@ -129,22 +124,6 @@ const SignupCard: React.FC = () => {
                 inputRef={emailRef}
                 required
               />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                type="password"
-                label="Password"
-                inputRef={passwordRef}
-                required
-              />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                type="password"
-                label="Password Confirmation"
-                inputRef={passwordConfirmationRef}
-                required
-              />
               <div className={styles.buttonWrapper}>
                 <Button
                   type="submit"
@@ -155,7 +134,7 @@ const SignupCard: React.FC = () => {
                   disabled={isLoading}
                   fullWidth
                 >
-                  Sign Up
+                  Reset Password
                 </Button>
                 {isLoading && (
                   <CircularProgress
@@ -164,20 +143,26 @@ const SignupCard: React.FC = () => {
                   />
                 )}
               </div>
+              <NextLink href="/login">
+                <Link style={{ cursor: "pointer" }}>
+                  <Typography align="center" variant="body1">
+                    Login
+                  </Typography>
+                </Link>
+              </NextLink>
             </Box>
           </Box>
         </Box>
+
         <Box className={styles.signUpTextContainer}>
-          <Typography variant="body2">
-            Already have an account?{" "}
-            <NextLink href="/login">
-              <Link style={{ cursor: "pointer" }}>Log In</Link>
+          <Typography variant="body1">
+            Don't have an account yet?{" "}
+            <NextLink href="/signup">
+              <Link style={{ cursor: "pointer" }}>Sign Up</Link>
             </NextLink>
           </Typography>
         </Box>
       </Box>
     </>
   );
-};
-
-export default SignupCard;
+}

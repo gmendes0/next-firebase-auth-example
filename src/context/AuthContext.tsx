@@ -14,6 +14,7 @@ type IAuthContext = {
     password: string
   ) => Promise<firebase.auth.UserCredential>;
   logout: () => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
 };
 
 export const AuthContext = createContext({} as IAuthContext);
@@ -44,6 +45,10 @@ export const AuthContextProvider: React.FC = ({ children }) => {
     return auth.signOut();
   }
 
+  function resetPassword(email: string): Promise<void> {
+    return auth.sendPasswordResetEmail(email);
+  }
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       setCurrentUser(user);
@@ -57,7 +62,9 @@ export const AuthContextProvider: React.FC = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ currentUser, signup, login, logout }}>
+    <AuthContext.Provider
+      value={{ currentUser, signup, login, logout, resetPassword }}
+    >
       {isLoading ? <PageLoading /> : children}
     </AuthContext.Provider>
   );
