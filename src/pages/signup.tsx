@@ -1,6 +1,7 @@
 import { SyntheticEvent, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import NextLink from "next/link";
+import Head from "next/head";
 import {
   Box,
   Button,
@@ -90,6 +91,9 @@ const SignupCard: React.FC = () => {
 
   return (
     <>
+      <Head>
+        <title>Sign Up</title>
+      </Head>
       <Box
         display="flex"
         flexDirection="column"

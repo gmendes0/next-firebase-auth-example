@@ -11,6 +11,7 @@ import {
 import { SyntheticEvent, useRef, useState } from "react";
 import { Alert } from "@material-ui/lab";
 import { useAuth } from "../context/AuthContext";
+import Head from "next/head";
 
 const useStyles = makeStyles(theme => ({
   formContainer: {
@@ -81,6 +82,9 @@ export default function ForgotPassword() {
 
   return (
     <>
+      <Head>
+        <title>Reset Password</title>
+      </Head>
       <Box
         display="flex"
         flexDirection="column"

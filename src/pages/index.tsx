@@ -1,31 +1,21 @@
 import {
-  AppBar,
-  Box,
   Button,
   Card,
   CardActions,
   CardContent,
   Container,
   makeStyles,
-  Toolbar,
-  Typography,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import ProtectedLayout from "../components/ProtectedLayout";
 import ProfileCardInfo from "../components/ProfileCardInfo";
 import Unauthorized from "../components/Unauthorized";
 import { useAuth } from "../context/AuthContext";
+import Head from "next/head";
 
 const useStyles = makeStyles(theme => ({
-  toolbar: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  appBarTitle: {
-    fontWeight: 600,
-  },
   mainContainer: {
     paddingTop: theme.spacing(5),
     display: "flex",
@@ -75,27 +65,10 @@ export default function Home() {
 
   return (
     <>
-      <header>
-        <AppBar>
-          <Toolbar className={styles.toolbar}>
-            <Box>
-              <Typography className={styles.appBarTitle} component="h1">
-                Dashboard
-              </Typography>
-            </Box>
-            <Box>
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleLogout}
-              >
-                Log Out
-              </Button>
-            </Box>
-          </Toolbar>
-        </AppBar>
-      </header>
-      <Box component="main">
+      <Head>
+        <title>Home</title>
+      </Head>
+      <ProtectedLayout>
         <Container className={styles.mainContainer}>
           {error && (
             <Alert
@@ -117,14 +90,14 @@ export default function Home() {
                 size="small"
                 variant="contained"
                 color="secondary"
-                onClick={() => router.push("/profile")}
+                onClick={() => router.push("/profile/update")}
               >
                 Update Profile
               </Button>
             </CardActions>
           </Card>
         </Container>
-      </Box>
+      </ProtectedLayout>
     </>
   );
 }

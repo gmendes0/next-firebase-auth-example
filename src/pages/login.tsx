@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { useAuth } from "../context/AuthContext";
+import Head from "next/head";
 
 const useStyles = makeStyles(theme => ({
   formContainer: {
@@ -83,6 +84,9 @@ const Login: React.FC = () => {
 
   return (
     <>
+      <Head>
+        <title>Login</title>
+      </Head>
       <Box
         display="flex"
         flexDirection="column"
