@@ -1,8 +1,10 @@
 import { SyntheticEvent, useRef, useState } from "react";
+import { useRouter } from "next/router";
 import NextLink from "next/link";
 import {
   Box,
   Button,
+  CircularProgress,
   Link,
   makeStyles,
   TextField,
@@ -27,6 +29,18 @@ const useStyles = makeStyles(theme => ({
     fontWeight: "bold",
     marginBottom: theme.spacing(1),
   },
+  buttonWrapper: {
+    width: "100%",
+    position: "relative",
+  },
+  buttonProgress: {
+    position: "absolute",
+    top: "50%",
+    right: "50%",
+    marginTop: -10, // Metade do tamanho
+    marginRight: -10 - 50, // Metade do tamanho - margem
+    color: theme.palette.text.disabled,
+  },
   formButton: {
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
@@ -34,9 +48,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Login: React.FC = () => {
-  // TODO: change sign in methods
-
   const styles = useStyles();
+  const router = useRouter();
 
   const emailRef = useRef<HTMLInputElement>();
   const passwordRef = useRef<HTMLInputElement>();
@@ -45,24 +58,21 @@ const Login: React.FC = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const { signup, currentUser } = useAuth();
+  const { signup, currentUser, login } = useAuth();
 
   async function handleSubmit(event: SyntheticEvent<HTMLButtonElement>) {
     event.preventDefault();
 
-    if (
-      !passwordRef.current.value ||
-      !passwordConfirmationRef.current.value ||
-      !emailRef.current.value
-    )
+    if (!passwordRef.current.value || !emailRef.current.value)
       return setError("Please, fill out all fields");
 
     try {
       setError("");
       setIsLoading(true);
-      await signup(emailRef.current.value, passwordRef.current.value);
+      await login(emailRef.current.value, passwordRef.current.value);
+      router.push("/");
     } catch (error) {
-      setError("Failed to create an account");
+      setError("Failed to sign in");
     } finally {
       setIsLoading(false);
     }
@@ -117,16 +127,25 @@ const Login: React.FC = () => {
                 inputRef={passwordRef}
                 required
               />
-              <Button
-                type="submit"
-                className={styles.formButton}
-                variant="contained"
-                size="large"
-                color="primary"
-                disabled={isLoading}
-              >
-                Sign In
-              </Button>
+              <div className={styles.buttonWrapper}>
+                <Button
+                  type="submit"
+                  className={styles.formButton}
+                  variant="contained"
+                  size="large"
+                  color="primary"
+                  disabled={isLoading}
+                  fullWidth
+                >
+                  Sign In
+                </Button>
+                {isLoading && (
+                  <CircularProgress
+                    className={styles.buttonProgress}
+                    size={20}
+                  />
+                )}
+              </div>
             </Box>
           </Box>
           <Box>

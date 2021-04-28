@@ -1,8 +1,10 @@
 import { SyntheticEvent, useRef, useState } from "react";
+import { useRouter } from "next/router";
 import NextLink from "next/link";
 import {
   Box,
   Button,
+  CircularProgress,
   Link,
   makeStyles,
   TextField,
@@ -27,6 +29,18 @@ const useStyles = makeStyles(theme => ({
     fontWeight: "bold",
     marginBottom: theme.spacing(1),
   },
+  buttonWrapper: {
+    width: "100%",
+    position: "relative",
+  },
+  buttonProgress: {
+    position: "absolute",
+    top: "50%",
+    right: "50%",
+    marginTop: -10, // Metade do tamanho
+    marginRight: -10 - 50, // Metade do tamanho menos margem
+    color: theme.palette.text.disabled,
+  },
   formButton: {
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
@@ -35,6 +49,7 @@ const useStyles = makeStyles(theme => ({
 
 const SignupCard: React.FC = () => {
   const styles = useStyles();
+  const router = useRouter();
 
   const emailRef = useRef<HTMLInputElement>();
   const passwordRef = useRef<HTMLInputElement>();
@@ -62,6 +77,7 @@ const SignupCard: React.FC = () => {
       setError("");
       setIsLoading(true);
       await signup(emailRef.current.value, passwordRef.current.value);
+      router.push("/");
     } catch (error) {
       setError("Failed to create an account");
     } finally {
@@ -126,16 +142,25 @@ const SignupCard: React.FC = () => {
                 inputRef={passwordConfirmationRef}
                 required
               />
-              <Button
-                type="submit"
-                className={styles.formButton}
-                variant="contained"
-                size="large"
-                color="primary"
-                disabled={isLoading}
-              >
-                Sign Up
-              </Button>
+              <div className={styles.buttonWrapper}>
+                <Button
+                  type="submit"
+                  className={styles.formButton}
+                  variant="contained"
+                  size="large"
+                  color="primary"
+                  disabled={isLoading}
+                  fullWidth
+                >
+                  Sign Up
+                </Button>
+                {isLoading && (
+                  <CircularProgress
+                    className={styles.buttonProgress}
+                    size={20}
+                  />
+                )}
+              </div>
             </Box>
           </Box>
           <Box>

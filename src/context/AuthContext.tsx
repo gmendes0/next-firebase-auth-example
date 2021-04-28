@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import firebase from "firebase";
 import { auth } from "../services/firebase";
-import { Box, CircularProgress, Typography } from "@material-ui/core";
+import PageLoading from "../components/PageLoading";
 
 type IAuthContext = {
   currentUser: firebase.User;
@@ -9,6 +9,11 @@ type IAuthContext = {
     email: string,
     password: string
   ) => Promise<firebase.auth.UserCredential>;
+  login: (
+    email: string,
+    password: string
+  ) => Promise<firebase.auth.UserCredential>;
+  logout: () => Promise<void>;
 };
 
 export const AuthContext = createContext({} as IAuthContext);
@@ -28,6 +33,17 @@ export const AuthContextProvider: React.FC = ({ children }) => {
     return auth.createUserWithEmailAndPassword(email, password);
   }
 
+  function login(
+    email: string,
+    password: string
+  ): Promise<firebase.auth.UserCredential> {
+    return auth.signInWithEmailAndPassword(email, password);
+  }
+
+  function logout(): Promise<void> {
+    return auth.signOut();
+  }
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       setCurrentUser(user);
@@ -41,27 +57,8 @@ export const AuthContextProvider: React.FC = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ currentUser, signup }}>
-      {isLoading ? (
-        <Box
-          width="100vw"
-          height="100vh"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <CircularProgress size={40} />
-          <Typography
-            style={{ marginTop: 15, fontWeight: 600 }}
-            color="textSecondary"
-          >
-            Authorizing...
-          </Typography>
-        </Box>
-      ) : (
-        children
-      )}
+    <AuthContext.Provider value={{ currentUser, signup, login, logout }}>
+      {isLoading ? <PageLoading /> : children}
     </AuthContext.Provider>
   );
 };
